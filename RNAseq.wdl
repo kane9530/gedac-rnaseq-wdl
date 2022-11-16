@@ -157,7 +157,7 @@ workflow RNAseq {
         String strandedness = inferStrandness.strandednessEndnessInfo["strandedness"]
         String endness = inferStrandness.strandednessEndnessInfo["endness"]
         Map[String, Int] strandednessFc = {"unstranded":0, "forward":1, "reverse":2}
-        Int strandedness = strandednessFc[strandedness]
+        Int strandedness_int = strandednessFc[strandedness]
     }
 
     # Collect all fastp jsons into a single html report for readability
@@ -175,7 +175,7 @@ workflow RNAseq {
         input:
             aligned_bam_inputs = starAligner.bamFile,
             annotation_file = annotation_file,
-            strandedness = strandedness,
+            strandedness = strandedness_int,
             isPairedEnd = endness[0] == "PairEnd", #If first sample is paired end, assume all samples are paired end
             docker = dockerUri,
             dockerMemoryGB = fcDockerMemoryGB,
