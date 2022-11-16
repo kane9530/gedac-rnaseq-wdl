@@ -1,0 +1,61 @@
+{
+  "RNAseq.uuid":"rnaseq-test-human",
+  "RNAseq.ref": {
+    "RNAseqScript": "s3://gedac-bucket-dev/ref/RNA-seq/scripts/main_v3.R",
+    "processInferExperimentScript": "s3://gedac-bucket-dev/ref/RNA-seq/scripts/processInferExperimentScript.py"
+    },
+
+  "RNAseq.designMatrices":
+    [{
+      "fastqs": [
+        [
+          "s3://gedac-bucket-dev/input/rna-seq/stranded_tumorNormal/hcc1395_normal_rep1_R1.fastq.gz",
+          "s3://gedac-bucket-dev/input/rna-seq/stranded_tumorNormal/hcc1395_normal_rep1_R2.fastq.gz"
+        ]
+      ],
+      "sampleName": "normal_rep1",
+      "sampleType": "normal",
+      "cols": {
+          "Library":"Lib1",
+          "Lane":"L001",
+          "Timepoint":0
+      }
+    },
+  {
+    "fastqs": [
+      [
+        "s3://gedac-bucket-dev/input/rna-seq/stranded_tumorNormal/hcc1395_normal_rep2_R1.fastq.gz",
+        "s3://gedac-bucket-dev/input/rna-seq/stranded_tumorNormal/hcc1395_normal_rep2_R2.fastq.gz"
+      ]
+    ],
+    "sampleName": "normal_rep2",
+    "sampleType": "normal",
+    "cols": {
+      "Library":"Lib1",
+      "Lane":"L001",
+      "Timepoint":0
+  }
+  },
+
+  {
+    "fastqs": [
+      [
+        "s3://gedac-bucket-dev/input/rna-seq/stranded_tumorNormal/hcc1395_tumor_rep1_R1.fastq.gz",
+        "s3://gedac-bucket-dev/input/rna-seq/stranded_tumorNormal/hcc1395_tumor_rep1_R2.fastq.gz"
+      ]
+    ],
+    "sampleName": "tumor_rep1",
+    "sampleType": "tumor",
+    "cols": {
+      "Library":"Lib1",
+      "Lane":"L001",
+      "Timepoint":0
+  }
+  }
+],
+"RNAseq.species": "human",
+"RNAseq.genomeVersion":"grch38",
+"RNAseq.umiLoc": "",
+"RNAseq.umiLen": 0,
+"RNAseq.dockerBase": "026171442599.dkr.ecr.ap-southeast-1.amazonaws.com/"
+}
