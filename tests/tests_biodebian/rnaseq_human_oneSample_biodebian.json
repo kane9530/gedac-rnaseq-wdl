@@ -1,9 +1,5 @@
 {
   "RNAseq.uuid":"RNAseq-test-human-oneCondition",
-  "RNAseq.ref": {
-    "RNAseqScript": "/media/gedac/pipelines/kane/gedac-containers/apps/rnaseq/main_v3.R",
-    "processInferExperimentScript": "/media/gedac/pipelines/kane/gedac-containers/apps/rnaseq/processInferExperimentScript.py"
-    },
 
   "RNAseq.designMatrices":
     [{
