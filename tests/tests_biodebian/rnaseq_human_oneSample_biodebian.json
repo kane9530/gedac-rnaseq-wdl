@@ -1,0 +1,30 @@
+{
+  "RNAseq.uuid":"RNAseq-test-human-oneCondition",
+  "RNAseq.ref": {
+    "RNAseqScript": "/media/gedac/pipelines/kane/gedac-containers/apps/rnaseq/main_v3.R",
+    "processInferExperimentScript": "/media/gedac/pipelines/kane/gedac-containers/apps/rnaseq/processInferExperimentScript.py"
+    },
+
+  "RNAseq.designMatrices":
+    [{
+      "fastqs": [
+        [
+          "/media/gedac/pipelines/tests/rnaseq/hcc1395_normal_rep1_R1.fastq.gz",
+          "/media/gedac/pipelines/tests/rnaseq/hcc1395_normal_rep1_R2.fastq.gz"
+        ]
+      ],
+      "sampleName": "normal_rep1",
+      "sampleType": "normal",
+      "cols": {
+          "Library":"Lib1",
+          "Lane":"L001",
+          "Timepoint":0
+      }
+    }
+],
+"RNAseq.species": "human",
+"RNAseq.genomeVersion":"grch38",
+"RNAseq.umiLoc": "",
+"RNAseq.umiLen": 0,
+"RNAseq.dockerBase": "026171442599.dkr.ecr.ap-southeast-1.amazonaws.com/"
+}
