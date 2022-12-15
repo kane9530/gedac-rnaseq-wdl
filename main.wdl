@@ -143,7 +143,6 @@ workflow RNAseq {
             input:
                 annotationGTF = starReferenceGtf,
                 inputBam = starAligner.bamFile,
-                processInferExperimentScript = processInferExperimentScript,
                 dockerUri = dockerUri
         }
 
@@ -209,7 +208,6 @@ workflow RNAseq {
                 library = myLibrary,
                 lane = myLane,
                 timepoint = myTimepoint,
-                mainRScript = mainRScript,
                 species = species
         }
     }
