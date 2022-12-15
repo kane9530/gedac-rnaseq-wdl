@@ -55,8 +55,6 @@ workflow RNAseq {
         String species
         String genomeVersion
 
-        File processInferExperimentScript = "/scripts/processInferExperimentScript.py"
-
         # fastqQC and multiQC
 		Array[DesignMatrix] designMatrices
         String umiLoc = ""
@@ -78,9 +76,6 @@ workflow RNAseq {
         Int fcDockerMemoryGB = 32
         Int fcNumberCpuThreads = 8
         Int fcNumberMaxRetries = 1
-        
-        #basicRNAseqAnalysis
-        File mainRScript = "/scripts/main.R"
     }
 
     # Define dockerUri as dockerBase+dockerPrefix where dockerPrefix is
