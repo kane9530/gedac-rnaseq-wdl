@@ -1,0 +1,8 @@
+{
+    "main_wdl_name": "main",
+    "display_name": "RNAseq",
+    "input_key": "RNAseq.designMatrices",
+    "source": "s3://gedac-bucket-dev/workflows/dev/RNAseq.wdl",
+    "modules": "s3://gedac-bucket-dev/workflows/dev/RNAseq.zip",
+    "sample": "s3://gedac-bucket-dev/tests/rnaseq/stranded_tumorNormal.zip"
+}

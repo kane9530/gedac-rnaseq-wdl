@@ -1,0 +1,84 @@
+{
+  "rules": {
+    "control": [
+      {
+        "connector": "type",
+        "dependant": "genomeVersion",
+        "controller": "species"
+      }
+    ],
+    "annotation_columns": [
+      {
+        "map": "sampleName",
+        "name": "Sample"
+      },
+      {
+        "map": "sampleType",
+        "name": "Condition"
+      },
+      {
+        "map": "Library",
+        "name": "Library"
+      },
+      {
+        "map": "Lane",
+        "name": "Lane"
+      },
+      {
+        "map": "Timepoint",
+        "name": "Timepoint (optional)"
+      }
+    ]
+  },
+  "fields": [
+    {
+      "key": "species",
+      "bind": true,
+      "type": "Dropdown",
+      "label": "Species",
+      "default": "human",
+      "options": [
+        {
+          "key": 0,
+          "value": ""
+        },
+        {
+          "key": "human",
+          "value": "Human (Homo sapiens)"
+        },
+        {
+          "key": "mouse",
+          "value": "Mouse (Mus musculus)"
+        }
+      ],
+      "required": true
+    },
+    {
+      "key": "genomeVersion",
+      "bind": true,
+      "type": "Dropdown",
+      "label": "Genome",
+      "default": 0,
+      "options": [
+        {
+          "key": 0,
+          "value": ""
+        },
+        {
+          "key": "grch38",
+          "type": "human",
+          "value": "Human:GRCh38"
+        },
+        {
+          "key": "grcm39",
+          "type": "mouse",
+          "value": "Mouse:GRCm39"
+        }
+      ],
+      "required": true,
+      "dependant": true
+    }
+  ]
+}
+
+

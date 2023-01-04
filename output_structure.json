@@ -1,0 +1,82 @@
+{
+  "RNAseq.bamFiles": {
+    "type": "pathToFile",
+    "title": "Sorted BAM files generated following STAR alignment",
+    "description": "",
+    "content": "bam"
+  },
+  "RNAseq.flagstat": {
+    "type": "pathArray",
+    "title": "Samtools flagstat output which counts the number of alignments for each FLAG type. Useful as a post-alignment quality check",
+    "description": "",
+    "content": "txt"
+  },
+  "RNAseq.countMatrix": {
+    "type": "pathToFile",
+    "title": "Genes x Samples count matrix. Output of read summarisation by featureCounts. Features are exons and summarisation is performed at the meta-feature level on geneids",
+    "content": "txt"
+  },
+  "RNAseq.fastpQcHtml": {
+    "type": "pathArray",
+    "title": "Quality Control (QC) report output by the Fastp program for each read/read-pair."
+  },
+  "RNAseq.multiqcHtml": {
+    "type": "pathToFile",
+    "title": "MultiQC Report Output",
+    "content": "html"
+  },
+  "RNAseq.countSummary": {
+    "type": "pathToFile",
+    "title": "FeatureCounts summarisation of read alignment",
+    "content": "txt"
+  },
+  "RNAseq.countsParsed": {
+    "type": "pathToFile",
+    "title": "Genes x Samples count matrix with human friendly gene names",
+    "content": "txt"
+  },
+  "RNAseq.downstreamResDir": {
+    "type": "pathToFolder",
+    "files": [
+      {
+        "name": "lane_effects_MDS.png",
+        "condition": "If more than one lane per library is present",
+        "description": "MDS plot with samples labelled according to their lanes. If samples appear to cluster by lane, then this may suggest that lane-specific batch effects are present."
+      },
+      {
+        "name": "techRep_MDS.png",
+        "condition": "If more than one library per sample is present",
+        "description": "MDS plot with samples labelled according to their libraries. Multiple libraries of the same sample should cluster together, which would reflect high technical reproducibility in the RNAseq experiment."
+      },
+      {
+        "name": "*MDS.png",
+        "description": "Multi-dimensional scaling (MDS) plot showing similarities and dissimilarities between samples in an unsupervised manner."
+      },
+      {
+        "name": "*heatmap.png",
+        "condition": "One plot per contrast",
+        "description": "A heatmap is created for the DE genes from the *DEG_across_samples.tsv file for each contrast. The heatmap clusters samples by similarities and reorders the genes  into blocks with similar expression patterns."
+      },
+      {
+        "name": "volcano.png",
+        "condition": "One plot per contrast",
+        "description": "A scatterplot that shows statistical significance (adjusted P value) of DEGs for a  particular contrast against the log fold change."
+      },
+      {
+        "name": "mean-var.png",
+        "description": "Mean-variance plot showing how the trend is removed after voom precision weights are applied to the data."
+      },
+      {
+        "name": "*DEG_across_samples.tsv",
+        "condition": "One plot per contrast",
+        "description": "Expression of DEGs for a particular contrast across samples. DEGs with a Benjamini-Hochberg adjusted p-value less than 0.05 are retained."
+      },
+      {
+        "name": "*sorted_DEG.txt",
+        "condition": "One file per contrast",
+        "description": "Sorted DE genes for a particular contrast, sorted from smallest to largest log fold  change. All genes with Benjamini-Hochberg adjusted p-value less than 0.05 are retained."
+      }
+    ],
+    "title": "Downstream Analysis Results"
+  }
+}

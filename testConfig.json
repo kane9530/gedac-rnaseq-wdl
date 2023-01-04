@@ -1,0 +1,13 @@
+{
+    "protocol": "http",
+    "modules": "modules.zip",
+    "server": "0.0.0.0:7098",
+    "block": true,
+    "tests": [
+        {
+            "wdl": "RNAseq.wdl",
+            "input": "tests/rnaseq_human_oneSample.json",
+            "test": true
+        }
+    ]
+}

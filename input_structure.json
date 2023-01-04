@@ -1,0 +1,13 @@
+{
+    "RNAseq.ref": {
+        "RNAseqScript": "s3://gedac-bucket-dev/ref/RNA-seq/scripts/main_v3.R",
+        "processInferExperimentScript": "s3://gedac-bucket-dev/ref/RNA-seq/scripts/processInferExperimentScript.py"
+    },
+    "RNAseq.uuid": "",
+    "RNAseq.umiLen": 0,
+    "RNAseq.umiLoc": "",
+    "RNAseq.species": "",
+    "RNAseq.dockerBase": "026171442599.dkr.ecr.ap-southeast-1.amazonaws.com/",
+    "RNAseq.genomeVersion": "",
+    "RNAseq.designMatrices": []
+}
