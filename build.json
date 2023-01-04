@@ -1,5 +1,6 @@
 {
     "main_wdl_name": "main",
+    "main": "RNAseq",
     "display_name": "RNAseq",
     "input_key": "RNAseq.designMatrices",
     "source": "s3://gedac-bucket-dev/workflows/dev/RNAseq.wdl",
