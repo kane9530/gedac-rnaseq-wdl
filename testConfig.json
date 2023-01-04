@@ -5,8 +5,8 @@
     "block": true,
     "tests": [
         {
-            "wdl": "RNAseq.wdl",
-            "input": "tests/rnaseq_human_oneSample.json",
+            "wdl": "main.wdl",
+            "input": "tests/tests_biodebian/rnaseq_human_oneSample_biodebian.json",
             "test": true
         }
     ]
