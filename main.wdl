@@ -135,6 +135,7 @@ workflow RNAseq {
         call samtools.Flagstat as Flagstat {
             input:
                 inputBam = starAligner.bamFile,
+                outputPath = "flagstat_" + designMat.sampleName + "_" + designMat.sampleType,
                 docker = dockerBase
         }
 
