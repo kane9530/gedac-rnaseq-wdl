@@ -30,14 +30,14 @@ version 1.0
 
 import "modules/star.wdl" as star
 import "modules/featureCounts.wdl" as featureCounts
-import "modules/fastqQc_edit.wdl" as fastqQC
+import "modules/fastp.wdl" as fastp
 import "modules/samtools.wdl" as samtools
 import "modules/multiQc.wdl" as multiQC
 import "modules/dataStructures.wdl" 
 import "modules/pairsToR1R2.wdl" as pairsToR1R2
 import "modules/downstreamRNAseq.wdl" as downstreamRNAseq
-import "modules/inferExperiment.wdl" as inferExperiment
 import "modules/countArrayUniqueItems.wdl" as numSamplesType
+import "modules/rseqc.wdl" as rseqc
 
 
 workflow RNAseq {
@@ -55,14 +55,14 @@ workflow RNAseq {
         String species
         String genomeVersion
 
-        # fastqQC and multiQC
+        # fastp and multiQC
 		Array[DesignMatrix] designMatrices
         String umiLoc = ""
         Int umiLen
 		Boolean chopReads = false
-		Int fastqQCNumberCpuThreads = 4
-		Int fastqQCdockerMemoryGB = 10
-		Int fastqQCNumberMaxRetries = 1
+		Int fastpNumberCpuThreads = 4
+		Int fastpdockerMemoryGB = 10
+		Int fastpNumberMaxRetries = 1
 
         #star and featureCounts tool implement the transcriptome image
         String starReferenceFasta = "/ref/genome/genome.fa"
@@ -72,7 +72,6 @@ workflow RNAseq {
         String starIndexDir = "/ref/transcriptome"
 
         #featureCounts
-        String annotation_file = "/ref/transcriptome/annotation.gtf"
         Int fcDockerMemoryGB = 32
         Int fcNumberCpuThreads = 8
         Int fcNumberMaxRetries = 1
@@ -99,16 +98,16 @@ workflow RNAseq {
     # After alignment, run flagstat to assess alignment quality.
 
     scatter(designMat in designMatrices) {
-        call fastqQC.trimQC as trimQC{
+        call fastp.trimQC as trimQC{
             input:
                 designMatrix=designMat,
                 dockerUri=dockerBase,
                 umiLoc=umiLoc,
                 umiLen=umiLen,
                 chopReads=chopReads,
-                numberCpuThreads=fastqQCNumberCpuThreads,
-                dockerMemoryGB=fastqQCdockerMemoryGB,
-                numberMaxRetries=fastqQCNumberMaxRetries
+                numberCpuThreads=fastpNumberCpuThreads,
+                dockerMemoryGB=fastpdockerMemoryGB,
+                numberMaxRetries=fastpNumberMaxRetries
         }
 
         call pairsToR1R2.arrayPairsToR1R2 as arrayPairsToR1R2 {
@@ -139,18 +138,40 @@ workflow RNAseq {
                 docker = dockerBase
         }
 
-            # Infer strandedness and endness of dataset from the first bam file in the star aligner output array
-        call inferExperiment.inferStrandedness as inferStrandness{
+        call samtools.createBamIndex as indexBam {
             input:
-                annotationGTF = starReferenceGtf,
+                inputBam = starAligner.bamFile,
+                docker = dockerBase
+        }
+
+        # Infer strandedness and endness of dataset from the first bam file in the star aligner output array
+        call rseqc.inferStrandedness as inferStrandness{
+            input:
                 inputBam = starAligner.bamFile,
                 dockerUri = dockerUri
         }
 
         String strandedness = inferStrandness.strandednessEndnessInfo["strandedness"]
+        String strandedness_full = inferStrandness.strandednessEndnessInfoFull["strandedness"]
         String endness = inferStrandness.strandednessEndnessInfo["endness"]
         Map[String, Int] strandednessFc = {"unstranded":0, "forward":1, "reverse":2}
         Int strandedness_int = strandednessFc[strandedness]
+
+        call rseqc.bam2NormalisedBigwig as bam2NormalisedBigwig{
+            input:
+                bamFile = starAligner.bamFile,
+                bamIndex = indexBam.bamIndex,
+                strandedness = strandedness_full,
+                docker = dockerUri
+        }
+
+        scatter(bigwig in bam2NormalisedBigwig.output_bigwigs){
+            call rseqc.geneBody_coverage2 as geneBody_coverage2{
+                input:
+                    bigwig = bigwig,
+                    docker = dockerUri
+            }
+        }
     }
 
     # Collect all fastp jsons into a single html report for readability
@@ -158,16 +179,22 @@ workflow RNAseq {
 		input:
             docker=dockerBase,
 			fastpJsonFiles=flatten(trimQC.onlyJson),
-			dockerMemoryGB=fastqQCdockerMemoryGB,
-			numberCpuThreads=fastqQCNumberCpuThreads,
-			numberMaxRetries=fastqQCNumberMaxRetries
+			dockerMemoryGB=fastpdockerMemoryGB,
+			numberCpuThreads=fastpNumberCpuThreads,
+			numberMaxRetries=fastpNumberMaxRetries
 	}
+
+     call rseqc.transcript_integrity as tin{
+		input:
+            docker=dockerUri,
+            bamFile = starAligner.bamFile,
+            bamIndex = indexBam.bamIndex
+        }
 
     # Read summarisation with featurecounts to generate count matrix
     call featureCounts.featureCounts as fc {
         input:
             aligned_bam_inputs = starAligner.bamFile,
-            annotation_file = annotation_file,
             strandedness = strandedness_int,
             isPairedEnd = endness[0] == "PairEnd", #If first sample is paired end, assume all samples are paired end
             docker = dockerUri,
@@ -219,6 +246,11 @@ workflow RNAseq {
         Array[File] bamFiles = starAligner.bamFile
         Array[File] starLogs = starAligner.logFinalOut
         Array[File] flagstat = Flagstat.flagstat
+        Array[File] tin_xls = tin.tin_xls
+        Array[File] tin_summary = tin.tin_summary
+        Array[File] gene_coverage = flatten(flatten(geneBody_coverage2.output_pngs))
+        Array[Array[File]] bigwigs = bam2NormalisedBigwig.output_bigwigs
+        Array[Array[File]] wigs = bam2NormalisedBigwig.output_wigs
         File countMatrix = fc.countMatrix
         File countsParsed = fc.countsParsed
         File countSummary = fc.countSummary
