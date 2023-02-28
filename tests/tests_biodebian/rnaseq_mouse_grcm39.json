@@ -1,0 +1,116 @@
+{
+    "RNAseq.uuid":"rnaseq-test-mouse-grcm39",
+  
+    "RNAseq.designMatrices":
+      [{
+        "fastqs": [
+          [
+            "/media/gedac/pipelines/tests/rnaseq/singleEnd_mouse_luminalVirgin/SRR1552444_GSM1480291_Luminal_virgin_1_Mus_musculus_RNA-Seq_R1.fastq.gz"
+          ]
+        ],
+        "sampleType": "luminal_virgin",
+        "sampleName": "rep1",
+        "cols": {
+          "Library":"Lib1",
+          "Lane":"L001",
+          "Timepoint":0
+      }
+    },
+    {
+      "fastqs": [
+        [
+            "/media/gedac/pipelines/tests/rnaseq/singleEnd_mouse_luminalVirgin/SRR1552445_GSM1480292_Luminal_virgin_2_Mus_musculus_RNA-Seq_R1.fastq.gz"
+        ]
+      ],
+      "sampleType": "luminal_virgin",
+      "sampleName": "rep2","cols": {
+        "Library":"Lib1",
+        "Lane":"L001",
+        "Timepoint":0
+    }},
+    {
+        "fastqs": [
+          [
+              "/media/gedac/pipelines/tests/rnaseq/singleEnd_mouse_luminalVirgin/SRR1552446_GSM1480293_Luminal_18.5_dP_1_Mus_musculus_RNA-Seq_R1.fastq.gz"
+          ]
+        ],
+        "sampleType": "luminal_dP",
+        "sampleName": "rep1",
+        "cols": {
+          "Library":"Lib1",
+          "Lane":"L001",
+          "Timepoint":0
+      }
+      },
+      {
+        "fastqs": [
+          [
+            "/media/gedac/pipelines/tests/rnaseq/singleEnd_mouse_luminalVirgin/SRR1552447_GSM1480294_Luminal_18.5_dP_2_Mus_musculus_RNA-Seq_R1.fastq.gz"
+          ]
+        ],
+        "sampleType": "luminal_dP",
+        "sampleName": "rep2",
+        "cols": {
+          "Library":"Lib1",
+          "Lane":"L001",
+          "Timepoint":0
+      }},
+      {
+        "fastqs": [
+          [
+              "/media/gedac/pipelines/tests/rnaseq/singleEnd_mouse_luminalVirgin/SRR1552450_GSM1480297_Basal_virgin_1_Mus_musculus_RNA-Seq_R1.fastq.gz"
+          ]
+        ],
+        "sampleType": "basal_virgin",
+        "sampleName": "rep1",
+        "cols": {
+          "Library":"Lib1",
+          "Lane":"L001",
+          "Timepoint":0
+      }},
+      {
+        "fastqs": [
+          [
+              "/media/gedac/pipelines/tests/rnaseq/singleEnd_mouse_luminalVirgin/SRR1552451_GSM1480298_Basal_virgin_2_Mus_musculus_RNA-Seq_R1.fastq.gz"
+          ]
+        ],
+        "sampleType": "basal_virgin",
+        "sampleName": "rep2",
+        "cols": {
+          "Library":"Lib1",
+          "Lane":"L001",
+          "Timepoint":0
+      }},
+      {
+        "fastqs": [
+          [
+              "/media/gedac/pipelines/tests/rnaseq/singleEnd_mouse_luminalVirgin/SRR1552452_GSM1480299_Basal_18.5_dP_1_Mus_musculus_RNA-Seq_R1.fastq.gz"
+          ]
+        ],
+        "sampleType": "basal_dP",
+        "sampleName": "rep1",
+        "cols": {
+          "Library":"Lib1",
+          "Lane":"L001",
+          "Timepoint":0
+      }},
+      {
+        "fastqs": [
+          [
+              "/media/gedac/pipelines/tests/rnaseq/singleEnd_mouse_luminalVirgin/SRR1552453_GSM1480300_Basal_18.5_dP_2_Mus_musculus_RNA-Seq_R1.fastq.gz"
+          ]
+        ],
+        "sampleType": "basal_dP",
+        "sampleName": "rep2",
+        "cols": {
+          "Library":"Lib1",
+          "Lane":"L001",
+          "Timepoint":0
+      }}   
+  ],
+  "RNAseq.species": "mouse",
+  "RNAseq.genomeVersion":"grcm39",
+  "RNAseq.umiLoc": "",
+  "RNAseq.umiLen": 0,
+  "RNAseq.dockerBase": "026171442599.dkr.ecr.ap-southeast-1.amazonaws.com/"
+}
