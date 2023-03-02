@@ -151,6 +151,18 @@ workflow RNAseq {
                 dockerUri = dockerUri
         }
 
+        call rseqc.plotGCdistribution as read_gc{
+            input:
+                bamFile = starAligner.bamFile,
+                docker = dockerUri
+        }
+
+        call rseqc.plotReadDistribution as read_dist{
+            input:
+                bamFile = starAligner.bamFile,
+                docker = dockerUri
+        }
+
         String strandedness = inferStrandness.strandednessEndnessInfo["strandedness"]
         String strandedness_full = inferStrandness.strandednessEndnessInfoFull["strandedness"]
         String endness = inferStrandness.strandednessEndnessInfo["endness"]
@@ -164,7 +176,7 @@ workflow RNAseq {
                 strandedness = strandedness_full,
                 docker = dockerUri
         }
-
+        
         scatter(bigwig in bam2NormalisedBigwig.output_bigwigs){
             call rseqc.geneBody_coverage2 as geneBody_coverage2{
                 input:
@@ -172,17 +184,8 @@ workflow RNAseq {
                     docker = dockerUri
             }
         }
+        
     }
-
-    # Collect all fastp jsons into a single html report for readability
-    call multiQC.multiQCFastp as multiQCFastp{
-		input:
-            docker=dockerBase,
-			fastpJsonFiles=flatten(trimQC.onlyJson),
-			dockerMemoryGB=fastpdockerMemoryGB,
-			numberCpuThreads=fastpNumberCpuThreads,
-			numberMaxRetries=fastpNumberMaxRetries
-	}
 
      call rseqc.transcript_integrity as tin{
 		input:
@@ -190,6 +193,30 @@ workflow RNAseq {
             bamFile = starAligner.bamFile,
             bamIndex = indexBam.bamIndex
         }
+    # Terrible runtime - use geneBody_coverage2 which takes bigwig files as input instead
+    #call rseqc.geneBody_coverage as geneBody_coverage{
+	#	input:
+    #        docker=dockerUri,
+    #        bamFile = starAligner.bamFile,
+    #        bamIndex = indexBam.bamIndex
+    #    }
+
+    # Collate all fastp and QC files into a single html for readability
+    call multiQC.multiQC as multiQC{
+		input:
+            docker=dockerBase,
+			fastpJsonFiles=flatten(trimQC.onlyJson),
+            read_gc_output=read_gc.gc_xls,
+            read_dist_output=read_dist.read_dist_output,
+            tin_summary=tin.tin_summary,
+            infer_strandedness=inferStrandness.inferExptFile,
+            star_logs=starAligner.logFinalOut,
+            flagstat_files=Flagstat.flagstat,
+            gene_coverage_output=flatten(flatten(geneBody_coverage2.output_txts)),
+			dockerMemoryGB=fastpdockerMemoryGB,
+			numberCpuThreads=fastpNumberCpuThreads,
+			numberMaxRetries=fastpNumberMaxRetries
+	}
 
     # Read summarisation with featurecounts to generate count matrix
     call featureCounts.featureCounts as fc {
@@ -242,13 +269,17 @@ workflow RNAseq {
     
     output{
         Array[Array[File]] fastpQcHtml = trimQC.onlyHTML
-		File multiqcHtml = multiQCFastp.multiqcHtml
+		File multiqcHtml = multiQC.multiqcHtml
         Array[File] bamFiles = starAligner.bamFile
         Array[File] starLogs = starAligner.logFinalOut
         Array[File] flagstat = Flagstat.flagstat
         Array[File] tin_xls = tin.tin_xls
         Array[File] tin_summary = tin.tin_summary
         Array[File] gene_coverage = flatten(flatten(geneBody_coverage2.output_pngs))
+        #Array[File] gene_coverage = geneBody_coverage.output_pngs
+        Array[File] gc_xls = read_gc.gc_xls
+        Array[File] gc_pdf = read_gc.gc_pdf
+        Array[File] readDist = read_dist.read_dist_output
         Array[Array[File]] bigwigs = bam2NormalisedBigwig.output_bigwigs
         Array[Array[File]] wigs = bam2NormalisedBigwig.output_wigs
         File countMatrix = fc.countMatrix
