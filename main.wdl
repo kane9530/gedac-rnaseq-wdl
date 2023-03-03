@@ -33,7 +33,7 @@ import "modules/featureCounts.wdl" as featureCounts
 import "modules/fastp.wdl" as fastp
 import "modules/samtools.wdl" as samtools
 import "modules/multiQc.wdl" as multiQC
-import "modules/dataStructures.wdl" 
+import "modules/dataStructures.wdl" as dataStructures
 import "modules/pairsToR1R2.wdl" as pairsToR1R2
 import "modules/downstreamRNAseq.wdl" as downstreamRNAseq
 import "modules/countArrayUniqueItems.wdl" as numSamplesType
@@ -51,7 +51,6 @@ workflow RNAseq {
     input {
 
         String dockerBase # URI to GeDac Amazon ECR
-        String uuid
         String species
         String genomeVersion
 
@@ -65,8 +64,8 @@ workflow RNAseq {
 		Int fastpNumberMaxRetries = 1
 
         #star and featureCounts tool implement the transcriptome image
-        String starReferenceFasta = "/ref/genome/genome.fa"
-        String starReferenceGtf = "/ref/transcriptome/annotation.gtf"
+        #String starReferenceFasta = "/ref/genome/genome.fa"
+        #String starReferenceGtf = "/ref/transcriptome/annotation.gtf"
         Int starNumberCpuThreads = 8
         String starMemory = "64G"
         String starIndexDir = "/ref/transcriptome"
@@ -84,14 +83,14 @@ workflow RNAseq {
     String dockerUri = dockerBase + dockerPrefix
 
     # For now, we never call genomeGenerate as all indices are already pre-built by us.
-    if (!defined(starIndexDir)) {
-        call star.GenomeGenerate as makeStarIndex {
-            input:
-                referenceFasta = starReferenceFasta,
-                referenceGtf = starReferenceGtf,
-                docker = dockerUri
-        }
-    }
+    #if (!defined(starIndexDir)) {
+    #    call star.GenomeGenerate as makeStarIndex {
+    #        input:
+    #            referenceFasta = starReferenceFasta,
+    #            referenceGtf = starReferenceGtf,
+    #            docker = dockerUri
+    #    }
+    #}
 
 	# For all fastq files within a design matrix, run fastp for QC. Then, convert the output of cleaned fastqs 
 	# into two arrays, one for R1 and another for R2 (optional), and feed it as input to the star aligner.
@@ -201,23 +200,6 @@ workflow RNAseq {
     #        bamIndex = indexBam.bamIndex
     #    }
 
-    # Collate all fastp and QC files into a single html for readability
-    call multiQC.multiQC as multiQC{
-		input:
-            docker=dockerBase,
-			fastpJsonFiles=flatten(trimQC.onlyJson),
-            read_gc_output=read_gc.gc_xls,
-            read_dist_output=read_dist.read_dist_output,
-            tin_summary=tin.tin_summary,
-            infer_strandedness=inferStrandness.inferExptFile,
-            star_logs=starAligner.logFinalOut,
-            flagstat_files=Flagstat.flagstat,
-            gene_coverage_output=flatten(flatten(geneBody_coverage2.output_txts)),
-			dockerMemoryGB=fastpdockerMemoryGB,
-			numberCpuThreads=fastpNumberCpuThreads,
-			numberMaxRetries=fastpNumberMaxRetries
-	}
-
     # Read summarisation with featurecounts to generate count matrix
     call featureCounts.featureCounts as fc {
         input:
@@ -229,6 +211,24 @@ workflow RNAseq {
             numberCpuThreads = fcNumberCpuThreads,
             numberMaxRetries = fcNumberMaxRetries
     }
+
+    # Collate all fastp and QC files into a single html for readability
+    call multiQC.multiQC as multiQCRun{
+		input:
+            docker=dockerBase,
+			fastpJsonFiles=flatten(trimQC.onlyJson),
+            read_gc_output=read_gc.gc_xls,
+            read_dist_output=read_dist.read_dist_output,
+            tin_summary=tin.tin_summary,
+            infer_strandedness=inferStrandness.inferExptFile,
+            star_logs=starAligner.logFinalOut,
+            flagstat_files=Flagstat.flagstat,
+            gene_coverage_output=flatten(flatten(geneBody_coverage2.output_txts)),
+            featurecounts=fc.countSummary,
+			dockerMemoryGB=fastpdockerMemoryGB,
+			numberCpuThreads=fastpNumberCpuThreads,
+			numberMaxRetries=fastpNumberMaxRetries
+	}
     
     # Retrieve metadata info over designMatrices
     scatter(designMat in designMatrices){
@@ -269,7 +269,7 @@ workflow RNAseq {
     
     output{
         Array[Array[File]] fastpQcHtml = trimQC.onlyHTML
-		File multiqcHtml = multiQC.multiqcHtml
+		File multiqcHtml = multiQCRun.multiqcHtml
         Array[File] bamFiles = starAligner.bamFile
         Array[File] starLogs = starAligner.logFinalOut
         Array[File] flagstat = Flagstat.flagstat
