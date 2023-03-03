@@ -1,6 +1,4 @@
-{
-    "RNAseq.uuid":"rnaseq-test-human",
-  
+{  
     "RNAseq.designMatrices":
       [{
         "fastqs": [

@@ -1,6 +1,4 @@
-{
-    "RNAseq.uuid":"rnaseq-test-mouse",
-  
+{  
     "RNAseq.designMatrices":
       [{
         "fastqs": [

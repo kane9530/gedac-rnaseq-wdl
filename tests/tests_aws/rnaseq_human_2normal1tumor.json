@@ -1,6 +1,5 @@
 {
-  "RNAseq.uuid":"rnaseq-test-human",
-  "RNAseq.ref": {
+    "RNAseq.ref": {
     "RNAseqScript": "s3://gedac-bucket-dev/ref/RNA-seq/scripts/main_v3.R",
     "processInferExperimentScript": "s3://gedac-bucket-dev/ref/RNA-seq/scripts/processInferExperimentScript.py"
     },
