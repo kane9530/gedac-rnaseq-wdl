@@ -1,8 +1,4 @@
 {
-    "RNAseq.ref": {
-      "RNAseqScript": "s3://gedac/scripts/main_v3.R",
-      "processInferExperimentScript": "s3://gedac/scripts/processInferExperimentScript.py"
-      },
     "RNAseq.designMatrices":
       [{
         "fastqs": [
