@@ -73,6 +73,11 @@
           "key": "grcm39",
           "type": "mouse",
           "value": "Mouse:GRCm39"
+        },
+        {
+          "key": "grcm38",
+          "type": "mouse",
+          "value": "Mouse:GRCm38"
         }
       ],
       "required": true,
