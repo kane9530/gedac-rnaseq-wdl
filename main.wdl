@@ -53,11 +53,12 @@ workflow RNAseq {
         String dockerBase # URI to GeDac Amazon ECR
         String species
         String genomeVersion
+        String uuid = "RNAseq-test"
 
         # fastp and multiQC
 		Array[DesignMatrix] designMatrices
         String umiLoc = ""
-        Int umiLen
+        Int umiLen = 0
 		Boolean chopReads = false
 		Int fastpNumberCpuThreads = 4
 		Int fastpdockerMemoryGB = 10
